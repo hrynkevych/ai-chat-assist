@@ -11,6 +11,7 @@ import {
   titleModel,
 } from './models.test';
 import { isTestEnvironment } from '../constants';
+import { createHuggingFaceModel, FREE_MODELS } from './huggingface';
 
 export const myProvider = isTestEnvironment
   ? customProvider({
@@ -23,13 +24,19 @@ export const myProvider = isTestEnvironment
     })
   : customProvider({
       languageModels: {
-        'chat-model': xai('grok-2-vision-1212'),
-        'chat-model-reasoning': wrapLanguageModel({
-          model: xai('grok-3-mini-beta'),
-          middleware: extractReasoningMiddleware({ tagName: 'think' }),
+        // Use free Hugging Face models
+        'chat-model': createHuggingFaceModel({
+          modelId: FREE_MODELS.MICROSOFT_DIALO_GPT,
         }),
-        'title-model': xai('grok-2-1212'),
-        'artifact-model': xai('grok-2-1212'),
+        'chat-model-reasoning': createHuggingFaceModel({
+          modelId: FREE_MODELS.FLAN_T5_BASE,
+        }),
+        'title-model': createHuggingFaceModel({
+          modelId: FREE_MODELS.DISTIL_GPT2,
+        }),
+        'artifact-model': createHuggingFaceModel({
+          modelId: FREE_MODELS.FLAN_T5_BASE,
+        }),
       },
       imageModels: {
         'small-model': xai.imageModel('grok-2-image'),
